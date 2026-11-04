@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bogenzeit-js — demo</title>
+<style>
+    :root { color-scheme: light dark; }
+    body { font-family: system-ui, sans-serif; max-width: 540px; margin: 0 auto; padding: 2rem 1.25rem; line-height: 1.6; }
+    h1 { font-size: 1.5rem; }
+    .reading { text-align: center; font-size: 2.6rem; font-weight: 600; padding: 1.4rem; border: 1px solid #8884; border-radius: 12px; margin: 1rem 0 0.4rem; }
+    .reading .bz-glyph { width: 1.25em; height: 1.25em; vertical-align: -0.3em; color: #6a3fb5; }
+    .note { text-align: center; color: #8a8a8a; font-size: 0.85rem; margin: 0 0 1.5rem; }
+    .controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: end; margin-bottom: 1.5rem; }
+    .controls label { font-size: 0.8rem; display: block; }
+    .controls input { width: 7rem; padding: 0.4rem; font: inherit; }
+    .controls button { padding: 0.45rem 0.8rem; font: inherit; cursor: pointer; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.45rem 0.5rem; border-bottom: 1px solid #8883; }
+    td.t { text-align: right; font-variant-numeric: tabular-nums; }
+</style>
+<script src="../bogenzeit.js"></script>
+</head>
+<body>
+
+<h1>bogenzeit-js</h1>
+<p>A live Bogenzeit reading for any place, from one small script. Edit the coordinates or use your location.</p>
+
+<div class="reading" id="reading"></div>
+<p class="note" id="place">Houston</p>
+
+<div class="controls">
+    <div><label for="lat">Latitude</label><input id="lat" type="number" step="0.01" value="29.76"></div>
+    <div><label for="lon">Longitude</label><input id="lon" type="number" step="0.01" value="-95.37"></div>
+    <button id="apply">Show</button>
+    <button id="here">Use my location</button>
+</div>
+
+<table>
+    <thead><tr><th>Marker</th><th class="t">Local time</th></tr></thead>
+    <tbody id="rows"></tbody>
+</table>
+<p class="note">Times in your device's time zone. Solar times are approximate.</p>
+
+<script>
+    var live = null;
+    function fmtTime(d) {
+        return d ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '—';
+    }
+    function show(lat, lon, label) {
+        if (live) { live.stop(); }
+        live = Bogenzeit.mount(document.getElementById('reading'), { lat: lat, lon: lon });
+        document.getElementById('place').textContent = label || (lat.toFixed(2) + ', ' + lon.toFixed(2));
+        var ev = Bogenzeit.events(new Date(), lat, lon);
+        var rows = [
+            ['Sunrise', ev.sunrise],
+            ['Solar noon', ev.noon],
+            ['Sunset', ev.sunset]
+        ];
+        document.getElementById('rows').innerHTML = rows.map(function (r) {
+            return '<tr><td>' + r[0] + '</td><td class="t">' + fmtTime(r[1]) + '</td></tr>';
+        }).join('');
+    }
+    document.getElementById('apply').addEventListener('click', function () {
+        show(parseFloat(document.getElementById('lat').value), parseFloat(document.getElementById('lon').value));
+    });
+    document.getElementById('here').addEventListener('click', function () {
+        navigator.geolocation.getCurrentPosition(function (p) {
+            document.getElementById('lat').value = p.coords.latitude.toFixed(2);
+            document.getElementById('lon').value = p.coords.longitude.toFixed(2);
+            show(p.coords.latitude, p.coords.longitude, 'Your location');
+        });
+    });
+    show(29.76, -95.37, 'Houston');
+</script>
+
+</body>
+</html>

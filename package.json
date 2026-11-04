@@ -1,0 +1,24 @@
+{
+  "name": "bogenzeit-js",
+  "version": "0.1.0",
+  "description": "Bogenzeit for the web: read time as a position on the Sun's arc, for any location. No dependencies.",
+  "main": "bogenzeit.js",
+  "author": "David M. Anderson",
+  "license": "MIT",
+  "homepage": "https://github.com/excelano/bogenzeit-js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/excelano/bogenzeit-js.git"
+  },
+  "keywords": [
+    "bogenzeit",
+    "solar",
+    "sundial",
+    "sun",
+    "time",
+    "clock"
+  ],
+  "files": [
+    "bogenzeit.js"
+  ]
+}
