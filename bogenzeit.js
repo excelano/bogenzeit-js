@@ -1,3 +1,6 @@
+/*! bogenzeit-js — https://github.com/excelano/bogenzeit-js
+ * Author: David M. Anderson. Built with AI assistance (Claude, Anthropic). MIT. */
+
 (function (root, factory) {
     if (typeof module === 'object' && module.exports) {
         module.exports = factory();
